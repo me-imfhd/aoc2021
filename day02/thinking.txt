@@ -1,0 +1,39 @@
+instead of comparing current value to next value
+we need to compare current value in range to next value in range
+
+loop:
+    curr1, curr2, curr3
+    next1, next2, next3,
+
+    but 
+    curr2 == next1
+    curr3 == next2
+
+    so we need simply
+    curr1, curr2, curr3, next
+    where next is curr4
+
+    so we simply need 
+    curr1 and next3
+
+curr1 = items.next()
+curr2 = items.next()
+curr3 = items.next()
+next = items.next()
+
+loop_count = 1
+loop:
+    curr1, curr2, curr3, next,
+
+    check sum and increase counter
+
+    curr1 = curr2
+    curr2 = curr3
+    curr3 = next
+    next = items.next() or items[3 + loop_count].or(0)
+
+
+or
+curr1, curr2, curr3, next
+
+if (sum curr1,curr2,curr3) > (sum curr2,curr3,next) then yes++
