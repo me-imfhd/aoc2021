@@ -1,0 +1,58 @@
+so there's a x position and a y position
+
+down {num} increases the y position
+up {num} decreases the y position
+forward {num} increases the x position
+
+x = 0
+y = 0
+
+loop:
+    intruction
+    if down then inc y
+    if up then dec y
+    if forward then inc x
+
+mul(x,y)
+
+solution
+
+in sql:
+
+create three sequences
+1. list of all down values
+2. list of all up values
+3. list of all forward values
+
+sum all three sequence values
+sum up values from each sequences
+then just (down - up) * forward
+
+
+part2:
+
+whenever we move forward we need to multiply the movement with the y value
+and increase the depth value
+
+x,
+aim
+
+loop:
+    instruction
+    forward,
+    up,
+    down,
+    
+    x = x + forward
+    aim = aim + down - up
+
+    depth = depth + (x * aim)
+
+in sql:
+
+create a row with:
+1. accumulated up values,
+2. accumulated down values
+3. current forward value or 0
+4. depth = sum((current forward value) *
+    (accumulated down - accumulated up)
