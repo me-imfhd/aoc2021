@@ -1,17 +1,17 @@
-DROP SCHEMA IF EXISTS day02 CASCADE;
-CREATE SCHEMA day02;
+DROP SCHEMA IF EXISTS day01 CASCADE;
+CREATE SCHEMA day01;
 
-CREATE TABLE day02.items (
+CREATE TABLE day01.items (
     id SERIAL,
     val INTEGER
 );
 
-\copy day02.items (val) FROM 'day02/input.txt' WITH (FORMAT 'text');
+\copy day01.items (val) FROM 'day01/input.txt' WITH (FORMAT 'text');
 
 
 WITH measurements AS (
     WITH sequence AS (
-        SELECT id, val FROM day02.items
+        SELECT id, val FROM day01.items
         ORDER BY id
     )
     SELECT
