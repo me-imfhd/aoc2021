@@ -1,0 +1,28 @@
+except for genisis
+next number can either be greater or lesser or same
+
+if its greater then increase the counter by one
+if its same or decreases then do nothing
+
+items = [...]
+cur = item[0]
+next = item[1]
+count = 0
+loop_count = 1
+last_loop = items len
+looping:
+    if loop_count (eq or gt) last_loop end
+    cur, next
+    if next > cur count++
+    cur = next[loop_count]
+    loop_count++
+    // to get the next item we need to capute the index of what next is on
+    // for the first loop it will be 1 for the second loop it will be second
+
+
+different way to solve
+curr_items = values
+next_items = curr_items but starting from the first next value of curr_items
+iterate on two sequences together (i.e, curr_items and next_items):
+    cur, next
+    next > curr then yes++
