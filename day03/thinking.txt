@@ -1,0 +1,97 @@
+to process the binary numbers we would have to split them to bits
+then arrange them in a way such that we have all the bits for every given
+bit's position, 
+like convert
+00011
+11001
+10010
+
+to 
+001
+010
+000
+101
+110
+
+this is also called transposing i.e, converting rows to coloumn or vice-versa
+we care about getting all the values in the column
+
+then count the most common bit by using a counter
+we get
+00011 -> gamma rate
+flip the bits -> eplison rate -> 11100
+
+to convert we can do it like
+
+split binary numbers into bits
+loop:
+    bits = binary_numbers.next().split("")
+    loop_c = 0
+    loop:
+        bit = bits.next()
+        -- assuming converted_binary_number stores list of string or null
+        -- check if its not null before concatenating
+        converted_binary_number[loop_c] = converted_binary_number[loop_c] + bit 
+        loop_c++
+
+loop:
+    bits = converted_binary_number.next().split("")
+    low_state = low_states.next() -- get a mutable reference
+    high_state = high_states.next() -- get a mutable reference
+    loop:
+        bit = bits.next()
+        if bit == '0' then low_state++ else high_state++
+    mcb = if low_state > high_state then '0' else '1'
+    gamma = gamma + mcb
+
+padded_gamma = gamma.zfill(32)
+
+convert string to decimal
+to get gamma rate
+flip the gamma rate to get elipson rate
+
+multiply to get power consumption
+
+
+
+in sql:
+
+load values as id, binary_number
+for e.g, 
+00011
+11001
+10010
+
+split binary numbers to bits and store them as rows in a single column named bit
+which looks like this btw:
+id, char, pos
+1, 0, 1
+1, 0, 2
+1, 0, 3
+1, 1, 4
+1, 1, 5
+2, 1, 1
+2, 1, 2
+2, 0, 3
+2, 0, 4
+2, 1, 5
+... so on
+
+we need to transpose to
+id, char, pos
+1, 0, 1
+2, 1, 1
+3, 1, 1
+1, 0, 2
+2, 1, 2
+3, 0, 2
+... so on
+
+doing this we can process by partitioning by position and running count filter, case operations to get the mcb
+
+accumulate all the mcb's to get the gamma rate by padding the chars to get gamma rate bits 
+convert gamma rate bits to decimal to get gamma rate
+flip the gamma rate bits and convert that to decimal to get elipson rate
+multiply both to get power consumption
+
+
