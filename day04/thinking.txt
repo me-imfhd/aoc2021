@@ -1,0 +1,62 @@
+first thing:
+
+id, number, index, marked
+1 , 14, 1
+1, 21, 2
+1, 17, 3
+1, 24, 4
+1, 4, 5
+2, 10, 1
+2, 16, 2
+2, 15, 3
+2, 9, 4
+2, 19, 5
+
+each id and index combination has a marked_by
+marked_by is the index of bingo
+
+we would have to check if grid is marked by id or index or not
+
+if its marked by id then
+get which id got marked first by ordering via marked_by
+
+how can we get our solution if we use marked_by
+let's say every row is marked but we need to find
+if for a given id its index's are marked or 
+for a given index its id's are marked
+
+but how we order them such that we can get which got marked first
+
+if all the indexes are marked for a given id then
+grid, id, marked_by
+
+we can build this: id, max_marked_by (max_marked_by comes from which indexgot high marked_by value, which tells which index got marked at the end)
+
+then we can simply choose which is the least marked by to get which id is the winner marked_by value and the winner id and winner grid
+and we can use the winner marked_by value to get all the numbers which are greater than the marked by value as in to get which are unmarked for the winner grid
+
+this is part one if we looking for id as the winner
+but index can be winner too
+
+we need to process this grid by grid because in case id we need all the 
+indexes to be marked
+but for indexes we don't want all the ids to be marked
+but only set of 5 ids to marked so we can have maybe something like
+if all the grids are marked for a given index
+if all the indexes are not marked for a given grid then set max_marked_by to null
+grid, index, max_marked_by
+1, 1, 9
+1, 2, 11
+1, 3, 9
+1, 4, 10
+1, 5, 8
+2, 1, null
+2, 2, 13
+2, 3, 15
+2, 4, 16
+2, 5, 18
+3, 1, 4
+... so on
+
+then we can simply choose the least marked by to get which index is the winner marked_by value and the winner grid
+and we can use the winner marked_by value to get all the numbers which are greater than the marked_by value as in to gee which are unmarked for the winner grid
