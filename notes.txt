@@ -1,0 +1,181 @@
+preface
+=======
+
+ai-generated notes for this aoc 2021 sql repo.
+scan here first, then open the day folder.
+
+caches outcomes, learnings, concepts,
+and tricks used while solving each part.
+
+schema is the fields on each row
+as the data is reshaped.
+a join lists fields from both sides.
+same puzzle, different shapes,
+different sql tricks.
+
+each day/ usually has:
+  sample / input
+  thinking.txt   scratch
+  solution.sql   the query
+
+
+day 01  sonar sweep
+-------------------
+
+part 1
+  count how many readings increase.
+
+  concept  consecutive pair compare
+  trick    self-join on serial id + 1
+           id is the time axis, no loop
+
+  schema
+    id(serial), val(int)
+    -> curr.id, curr.val,
+       next.id, next.val
+
+part 2
+  same count, on sliding windows of 3.
+
+  concept  overlapping window sums
+  trick    windows share two values
+           only curr1 vs next3 change
+           four-way self-join, compare sums
+
+  schema
+    id(serial), val(int)
+    -> curr1.id, curr1.val,
+       curr2.id, curr2.val,
+       curr3.id, curr3.val,
+       next.id, next.val
+    -> first_sum, second_sum
+
+
+day 02  dive
+------------
+
+part 1
+  forward / up / down.
+  answer is x * depth.
+
+  concept  bucket the three directions
+  trick    sum(val) filter (where direction = ...)
+           depth = sum(down) - sum(up)
+           enum type for the directions
+
+  schema
+    id(serial), val(int),
+    direction(enum up/down/forward)
+    -> x, up, down
+
+part 2
+  aim changes on up/down.
+  forward also adds aim * forward to depth.
+
+  concept  running totals, then product
+  trick    window sum over id:
+             rows between unbounded preceding
+             and current row
+           coalesce nulls to 0
+           depth = sum(forward * (down_acc - up_acc))
+
+  schema
+    id(serial), val(int),
+    direction(enum up/down/forward)
+    -> accumulated_up,
+       accumulated_down,
+       forward
+    -> depth, x
+
+
+day 03  binary diagnostic
+-------------------------
+
+part 1
+  gamma = most common bit per position.
+  epsilon = flipped gamma.
+  answer is gamma * epsilon.
+
+  concept  transpose bits, then majority
+  trick    regexp_split_to_table explodes bits
+           row_number() per id = bit position
+           group by pos, count 0/1 with filter
+           string_agg + lpad to 32
+           cast bit(32)::int
+           epsilon via bitwise not
+
+  schema
+    id(serial), value(text)
+    -> id, bit
+    -> id, bit, pos
+    -> pos, low_state, high_state
+    -> gamma_bits(text)
+    -> gamma(int), epsilon(int)
+
+part 2
+  filter rows bit by bit.
+  o2 keeps most common (1 on tie).
+  co2 keeps least common (0 on tie).
+  answer is o2 * co2.
+
+  concept  iterative bit-criteria filter
+  trick    sql cannot loop, so plpgsql
+           temp table of remaining ids
+           each pass: pick winner bit, delete losers
+           not exists beats not in
+           index + analyze the temp tables
+           so the planner does not guess
+
+  schema
+    id(serial), value(text)
+    -> id, bit, pos
+    -> remaining.id
+    -> remaining.id, bit, pos
+    -> o2_value, co2_value
+
+
+day 04  giant squid
+-------------------
+
+part 1
+  5x5 boards, called numbers.
+  first board to bingo wins.
+  score = unmarked nums * last called.
+
+  concept  when does a line complete
+  trick    flatten boards:
+             grid, row id, num, pos
+           marked_by = call index of that number
+           line completes at max(marked_by)
+             over the row
+             or over (pos, grid) for a column
+           board bingo_by = least of those mins
+           first winner = smallest bingo_by
+           unmarked means marked_by > bingo_by
+
+  schema
+    grid_row(text)
+    bingo_line(text)
+    -> id(serial), value(text)
+    -> id(serial), value(int)
+    -> grid, id, num, pos
+    -> grid, id, num, pos, marked_by
+    -> grid, id, pos,
+       first_row_marked_by,
+       first_column_marked_by
+    -> grid,
+       row_bingo_by, column_bingo_by, bingo_by
+    -> gv.grid, gv.id, gv.num, gv.pos, gv.marked_by,
+       bingo.grid, bingo.bingo_by
+
+part 2
+  last board to bingo.
+
+  concept  same marking, opposite order
+  trick    same cte, order bingo_by desc
+           limit 1
+
+  schema
+    same as part 1
+    -> gv.grid, gv.id, gv.num, gv.pos, gv.marked_by,
+       bingo.grid, bingo.bingo_by
